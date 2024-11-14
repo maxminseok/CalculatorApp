@@ -15,7 +15,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
+        view.backgroundColor = .black
+        makeLabel()
         
         let buttonTitles = ["7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "AC", "0", "=", "/"]
         var buttons: [UIButton] = []
@@ -42,15 +43,14 @@ class ViewController: UIViewController {
         let verticalStackView = makeVerticalStackView(stackViewList)
     }
     
-    private func configureUI() {
-        view.backgroundColor = .black
-        
+    private func makeLabel() {
         label.text = "12345"
         label.textColor = .white
         label.textAlignment = .right
         label.font = UIFont.boldSystemFont(ofSize: 60)
         
         view.addSubview(label)
+        
         label.snp.makeConstraints {
             $0.height.equalTo(100)
             $0.top.equalToSuperview().offset(200)
@@ -59,24 +59,18 @@ class ViewController: UIViewController {
     }
     
     func makeButtons(_ titleValues: String) -> UIButton {
+        let button = UIButton()
+        button.setTitle(titleValues, for: .normal) // 모든 버튼의 타이틀을 입력받은 titleValues로 설정
+        button.setTitleColor(.white, for: .normal)  // 모든 버튼의 title 색을 하얀색으로 설정
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30) // 모든 버튼의 폰트를 bold, 크기 30으로 설정
+        button.layer.cornerRadius = 40 // 모든 버튼의 모서리를 40으로 설정
+        
         if let _ = Int(titleValues) {
-            let button = UIButton()
-            button.setTitle(titleValues, for: .normal)
-            button.setTitleColor(.white, for: .normal)
-            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
-            button.layer.cornerRadius = 40
-            button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
-            
+            button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0) // 숫자 버튼의 배경색 설정
             return button
         }
         else {
-            let button = UIButton()
-            button.setTitle(titleValues, for: .normal)
-            button.setTitleColor(.white, for: .normal)
-            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
-            button.layer.cornerRadius = 40
-            button.backgroundColor = .orange
-            
+            button.backgroundColor = .orange // title이 숫자가 아닐 경우 배경을 오랜지색으로 설정
             return button
         }
     }
