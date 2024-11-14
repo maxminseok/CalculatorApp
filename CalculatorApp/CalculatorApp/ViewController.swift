@@ -18,13 +18,18 @@ class ViewController: UIViewController {
     }
     
     private func configureUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .black
         
-        label.text = "Hello, World!"
-        label.textColor = .black
+        label.text = "12345"
+        label.textColor = .white
+        label.textAlignment = .right
+        label.font = UIFont.boldSystemFont(ofSize: 60)
+        
         view.addSubview(label)
         label.snp.makeConstraints {
-            $0.center.equalToSuperview()
+            $0.height.equalTo(100)
+            $0.top.equalToSuperview().offset(200)
+            $0.trailing.equalToSuperview().offset(-30)
         }
         
     }
