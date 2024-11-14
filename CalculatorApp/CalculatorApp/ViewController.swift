@@ -18,11 +18,32 @@ class ViewController: UIViewController {
         
         // 버튼 배열 생성
         let buttons = makeButtons()
-        let selectedButtons = Array(buttons[0..<4])
-    
+        let selectedButtons1 = Array(buttons[0..<4])
+        let selectedButtons2 = Array(buttons[4..<8])
+        let selectedButtons3 = Array(buttons[8..<12])
+        let selectedButtons4 = Array(buttons[12..<16])
+        
         // 스택뷰 생성
-        let horizontalStackView = makeHorizontalStackView(selectedButtons)
-
+        let horizontalStackView1 = makeHorizontalStackView(selectedButtons1)
+        let horizontalStackView2 = makeHorizontalStackView(selectedButtons2)
+        let horizontalStackView3 = makeHorizontalStackView(selectedButtons3)
+        let horizontalStackView4 = makeHorizontalStackView(selectedButtons4)
+        
+        let list = [horizontalStackView1, horizontalStackView2, horizontalStackView3, horizontalStackView4]
+        
+        let verticalStackView = UIStackView(arrangedSubviews: list) // 4개의 스택뷰를 수직으로 쌓는 스택뷰
+        verticalStackView.axis = .vertical
+        verticalStackView.backgroundColor = .black
+        verticalStackView.spacing = 10
+        verticalStackView.distribution = .fillEqually
+        
+        
+        view.addSubview(verticalStackView)
+        verticalStackView.snp.makeConstraints {
+            $0.top.equalTo(label.snp.bottom).offset(60)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        
     }
     
     private func configureUI() {
@@ -61,14 +82,14 @@ class ViewController: UIViewController {
         horizontalStackView.backgroundColor = .black // 배경 색 설정
         horizontalStackView.spacing = 10 // 버튼끼리 간격 10으로 설정
         horizontalStackView.distribution = .fillEqually // 모든 버튼 일정한 간격으로 배치시키기
-
+        
         // 스택뷰 뷰에 추가
         view.addSubview(horizontalStackView)
         
         horizontalStackView.snp.makeConstraints {
             $0.height.equalTo(80)
-            $0.top.equalTo(label.snp.bottom).offset(60) // label과 간격 20으로 설정
-            $0.leading.trailing.equalToSuperview().inset(20) // 좌우 간격 20으로 설정
+            //$0.top.equalTo(label.snp.bottom).offset(60) // label과 간격 20으로 설정
+            //$0.leading.trailing.equalToSuperview().inset(20) // 좌우 간격 20으로 설정
         }
         
         return horizontalStackView
