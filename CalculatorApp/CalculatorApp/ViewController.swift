@@ -12,37 +12,56 @@ class ViewController: UIViewController {
     
     let label = UILabel()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         
+        let buttonTitles = ["7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "AC", "0", "=", "/"]
+        var buttons: [UIButton] = []
+        
         // 버튼 배열 생성
-        let buttons = makeButtons()
+        buttonTitles.forEach {
+            buttons.append(makeButtons($0))
+        }
+        
         let selectedButtons1 = Array(buttons[0..<4])
         let selectedButtons2 = Array(buttons[4..<8])
         let selectedButtons3 = Array(buttons[8..<12])
         let selectedButtons4 = Array(buttons[12..<16])
         
-        // 스택뷰 생성
+        // 가로 스택뷰 생성
         let horizontalStackView1 = makeHorizontalStackView(selectedButtons1)
         let horizontalStackView2 = makeHorizontalStackView(selectedButtons2)
         let horizontalStackView3 = makeHorizontalStackView(selectedButtons3)
         let horizontalStackView4 = makeHorizontalStackView(selectedButtons4)
         
-        let list = [horizontalStackView1, horizontalStackView2, horizontalStackView3, horizontalStackView4]
+        let stackViewList = [horizontalStackView1, horizontalStackView2, horizontalStackView3, horizontalStackView4]
         
-        let verticalStackView = UIStackView(arrangedSubviews: list) // 4개의 스택뷰를 수직으로 쌓는 스택뷰
-        verticalStackView.axis = .vertical
-        verticalStackView.backgroundColor = .black
-        verticalStackView.spacing = 10
-        verticalStackView.distribution = .fillEqually
+        // 세로 스택뷰 생성
+        let verticalStackView = makeVerticalStackView(stackViewList)
         
         
-        view.addSubview(verticalStackView)
-        verticalStackView.snp.makeConstraints {
-            $0.top.equalTo(label.snp.bottom).offset(60)
-            $0.leading.trailing.equalToSuperview().inset(20)
-        }
+        /*
+        // 버튼 배열 생성
+        let buttons = makeButtons()
+        
+        let selectedButtons1 = Array(buttons[0..<4])
+        let selectedButtons2 = Array(buttons[4..<8])
+        let selectedButtons3 = Array(buttons[8..<12])
+        let selectedButtons4 = Array(buttons[12..<16])
+        
+        // 가로 스택뷰 생성
+        let horizontalStackView1 = makeHorizontalStackView(selectedButtons1)
+        let horizontalStackView2 = makeHorizontalStackView(selectedButtons2)
+        let horizontalStackView3 = makeHorizontalStackView(selectedButtons3)
+        let horizontalStackView4 = makeHorizontalStackView(selectedButtons4)
+        
+        let stackViewList = [horizontalStackView1, horizontalStackView2, horizontalStackView3, horizontalStackView4]
+        
+        // 세로 스택뷰 생성
+        let verticalStackView = makeVerticalStackView(stackViewList)
+        */
         
     }
     
@@ -62,9 +81,31 @@ class ViewController: UIViewController {
         }
     }
     
+    func makeButtons(_ titleValues: String) -> UIButton {
+        if let number = Int(titleValues) {
+            let button = UIButton()
+            button.setTitle(titleValues, for: .normal)
+            button.setTitleColor(.white, for: .normal)
+            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+            button.layer.cornerRadius = 40
+            button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+            
+            return button
+        }
+        else {
+            let button = UIButton()
+            button.setTitle(titleValues, for: .normal)
+            button.setTitleColor(.white, for: .normal)
+            button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+            button.layer.cornerRadius = 40
+            button.backgroundColor = .orange
+            
+            return button
+        }
+    }
+    /*
     func makeButtons() -> [UIButton] { // 버튼 배열 반환하는 메서드 -> makeHorizontalStackView에 사용 예정
         let buttonTitles = ["7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "AC", "0", "=", "/"]
-        //let buttonTitles = ["7", "8", "9", "+"]
         return buttonTitles.map { title in // buttonTitles를 순회하며 클로저가 반환한 버튼으로 새로운 버튼 배열 만들어 반환
             let button = UIButton() // 반환할 버튼 만들기
             button.setTitle(title, for: .normal) // 7,8,9,...=,/ 까지 매개변수로 전달받아서 버튼 타이틀로 사용
@@ -75,8 +116,9 @@ class ViewController: UIViewController {
             return button // buttonTitles의 요소 하나를 적용한 버튼 하나 반환
         }
     }
+    */
     
-    func makeHorizontalStackView(_ views: [UIView]) -> UIStackView { // 버튼을 배열로 입력 받아서 스택뷰를 반환..?
+    func makeHorizontalStackView(_ views: [UIView]) -> UIStackView { // 버튼을 배열로 입력 받아서 스택뷰를 반환
         let horizontalStackView = UIStackView(arrangedSubviews: views) // 버튼 배열 스택뷰에 추가
         horizontalStackView.axis = .horizontal // 수직 스택뷰로 설정
         horizontalStackView.backgroundColor = .black // 배경 색 설정
@@ -93,6 +135,22 @@ class ViewController: UIViewController {
         }
         
         return horizontalStackView
+    }
+    
+    func makeVerticalStackView(_ stackViewList: [UIStackView]) {
+        let verticalStackView = UIStackView(arrangedSubviews: stackViewList) // 4개의 스택뷰를 수직으로 쌓는 스택뷰
+        verticalStackView.axis = .vertical
+        verticalStackView.backgroundColor = .black
+        verticalStackView.spacing = 10
+        verticalStackView.distribution = .fillEqually
+        
+        view.addSubview(verticalStackView)
+        
+        verticalStackView.snp.makeConstraints {
+            $0.width.equalTo(350)
+            $0.top.equalTo(label.snp.bottom).offset(60)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
     }
     
     /*
@@ -132,6 +190,6 @@ class ViewController: UIViewController {
     
 }
 
-#Preview {
-    ViewController()
-}
+//#Preview {
+//    ViewController()
+//}
