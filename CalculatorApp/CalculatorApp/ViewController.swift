@@ -10,7 +10,7 @@ import SnapKit
 
 class ViewController: UIViewController {
     
-    let label = UILabel()
+    var label = UILabel()
     
     
     override func viewDidLoad() {
@@ -52,7 +52,7 @@ class ViewController: UIViewController {
     
     // 라벨 만들기
     private func makeLabel() {
-        label.text = "12345"
+        label.text = "0"
         label.textColor = .white
         label.textAlignment = .right
         label.font = UIFont.boldSystemFont(ofSize: 60)
@@ -73,6 +73,7 @@ class ViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)  // 모든 버튼의 title 색을 하얀색으로 설정
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30) // 모든 버튼의 폰트를 bold, 크기 30으로 설정
         button.layer.cornerRadius = 40 // 모든 버튼의 모서리를 40으로 설정
+        button.addTarget(self, action: #selector(clickButton), for: .touchDown) // 버튼이 눌렸을 때 clickButton 메서드 호출, 매개변수로 titleValues를 넘김
         
         if let _ = Int(titleValues) {
             button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0) // 숫자 버튼의 배경색 설정
@@ -117,7 +118,30 @@ class ViewController: UIViewController {
             $0.leading.trailing.equalToSuperview().inset(20)
         }
     }
-     
+    @objc func clickButton(_ sender: UIButton) {
+        if let title = sender.title(for: .normal) { // 타이틀 값은 옵셔널 타입이라 옵셔널 바인딩
+            if let number = Int(title) {    // 숫자 버튼 눌렀을 때
+                if let first = label.text?.first, first == "0" { // 라벨 첫 글자가 0이면
+                    label.text = String(number) // 입력한 숫자로 라벨 값 바꾸기
+                }
+                else {
+                    label.text?.append(title)   // 첫글자가 0이 아니면 버튼의 타이틀 값을 라벨 값 뒤에 추가하기
+                }
+            }
+            else {  // 기호 버튼 눌렀을 때
+                if title == "AC" {  // AC를 눌렀으면
+                    label.text = "0"    // 라벨 값 0으로 초기화
+                }
+                else if title == "=" {
+                    
+                }
+                else {  // AC나 =이 아니라면 버튼의 타이틀 값을 라벨 값 뒤에 추가하기
+                    label.text?.append(title)
+                }
+                
+            }
+        }
+    }
 }
 
 //#Preview {
