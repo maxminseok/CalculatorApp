@@ -73,7 +73,8 @@ class ViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)  // 모든 버튼의 title 색을 하얀색으로 설정
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30) // 모든 버튼의 폰트를 bold, 크기 30으로 설정
         button.layer.cornerRadius = 40 // 모든 버튼의 모서리를 40으로 설정
-        button.addTarget(self, action: #selector(clickButton), for: .touchDown) // 버튼이 눌렸을 때 clickButton 메서드 호출, 매개변수로 titleValues를 넘김
+        
+        button.addTarget(self, action: #selector(clickButton), for: .touchDown) // 버튼이 눌렸을 때 clickButton 메서드 호출
         
         if let _ = Int(titleValues) {
             button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0) // 숫자 버튼의 배경색 설정
@@ -118,6 +119,7 @@ class ViewController: UIViewController {
             $0.leading.trailing.equalToSuperview().inset(20)
         }
     }
+    
     @objc func clickButton(_ sender: UIButton) {
         if let title = sender.title(for: .normal) { // 타이틀 값은 옵셔널 타입이라 옵셔널 바인딩
             if let number = Int(title) {    // 숫자 버튼 눌렀을 때
@@ -129,11 +131,17 @@ class ViewController: UIViewController {
                 }
             }
             else {  // 기호 버튼 눌렀을 때
-                if title == "AC" {  // AC를 눌렀으면
+                if title == "AC" {  // AC를 눌렀을 떄
                     label.text = "0"    // 라벨 값 0으로 초기화
                 }
-                else if title == "=" {
-                    
+                else if title == "=" { // = 눌렀을 때
+                    let result = calculate(expression: label.text ?? "0") // calculate 메서드 호출, 매개변수로 label 값 넣고 값이 없을땐 0 전달
+                    if let validResult = result {   // 반환이 옵셔널 Int이므로 바인딩
+                        label.text = String(validResult)    // 계산한 값으로 라벨 값 변경
+                    }
+                    else {
+                        label.text = "잘못된 수식 입력입니다"  // 잘못된 수식 입력으로 nil이 반환될 경우 잘못된 수식 입력 문구 띄우기
+                    }
                 }
                 else {  // AC나 =이 아니라면 버튼의 타이틀 값을 라벨 값 뒤에 추가하기
                     label.text?.append(title)
@@ -142,6 +150,16 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    func calculate(expression: String) -> Int? {
+            let expression = NSExpression(format: expression)
+        if let result = expression.expressionValue(with: nil, context: nil) as? Int {
+            return result
+        } else {
+            return nil
+        }
+    }
+    
 }
 
 //#Preview {
