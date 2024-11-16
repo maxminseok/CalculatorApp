@@ -74,7 +74,7 @@ class ViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30) // 모든 버튼의 폰트를 bold, 크기 30으로 설정
         button.layer.cornerRadius = 40 // 모든 버튼의 모서리를 40으로 설정
         
-        button.addTarget(self, action: #selector(clickButton), for: .touchDown) // 버튼이 눌렸을 때 clickButton 메서드 호출
+        button.addTarget(self, action: #selector(clickedButton), for: .touchDown) // 버튼이 눌렸을 때 clickButton 메서드 호출
         
         if let _ = Int(titleValues) {
             button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0) // 숫자 버튼의 배경색 설정
@@ -120,46 +120,56 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func clickButton(_ sender: UIButton) {
+    // 버튼이 눌렸을 때 동작 하는 메서드
+    @objc func clickedButton(_ sender: UIButton) {
         if let title = sender.title(for: .normal) { // 타이틀 값은 옵셔널 타입이라 옵셔널 바인딩
-            if let number = Int(title) {    // 숫자 버튼 눌렀을 때
-                if let first = label.text?.first, first == "0" { // 라벨 첫 글자가 0이면
-                    label.text = String(number) // 입력한 숫자로 라벨 값 바꾸기
-                }
-                else {
-                    label.text?.append(title)   // 첫글자가 0이 아니면 버튼의 타이틀 값을 라벨 값 뒤에 추가하기
-                }
-            }
-            else {  // 기호 버튼 눌렀을 때
-                if title == "AC" {  // AC를 눌렀을 떄
-                    label.text = "0"    // 라벨 값 0으로 초기화
-                }
-                else if title == "=" { // = 눌렀을 때
-                    let result = calculate(expression: label.text ?? "0") // calculate 메서드 호출, 매개변수로 label 값 넣고 값이 없을땐 0 전달
-                    if let validResult = result {   // 반환이 옵셔널 Int이므로 바인딩
-                        label.text = String(validResult)    // 계산한 값으로 라벨 값 변경
-                    }
-                    else {
-                        label.text = "잘못된 수식 입력입니다"  // 잘못된 수식 입력으로 nil이 반환될 경우 잘못된 수식 입력 문구 띄우기
-                    }
-                }
-                else {  // AC나 =이 아니라면 버튼의 타이틀 값을 라벨 값 뒤에 추가하기
-                    label.text?.append(title)
-                }
-                
-            }
+            changeLabelText(title)  // 버튼의 타이틀을 매개변수로 전달
         }
     }
     
+    //
+    func changeLabelText(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
+        // 타이틀이 숫자일 때 handleNumberInput 메서드 호출
+        if let number = Int(input) {
+            handleNumberInput(input)
+        }
+        // 타이틀이 기호일 때 inputOperation 메서드 호출
+        else {
+            handleOperationInput(input)
+        }
+    }
+    
+    // 라벨의 텍스트 첫 글자가 0인지 판단 후 라벨 값 변경
+    func handleNumberInput(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
+        let first = label.text?.first
+        first == "0" ? label.text = String(input) : label.text?.append(input)
+    }
+    
+    // 누른 버튼이 기호일 때 호출되는 메서드
+    func handleOperationInput(_ input: String) {
+        // 기호가 "=" 일 때
+        if input == "=" {
+            if let validResult = calculate(expression: label.text ?? "0") {
+                label.text = String(validResult)
+            }
+        }
+        //기호가 "AC" 또는 사칙연산 기호일 때
+        else {
+            input == "AC" ? label.text = "0" : label.text?.append(input)
+        }
+    }
+    
+    // 숫자와 연산 기호로 이루어진 문자열을 연산할 때 호출되는 메서드
     func calculate(expression: String) -> Int? {
-            let expression = NSExpression(format: expression)
+        let expression = NSExpression(format: expression)   // 입력받은 문자열로 NSExpression 클래스의 인스턴스
         if let result = expression.expressionValue(with: nil, context: nil) as? Int {
+            // 결과값 Int로 타입캐스팅, 성공시 반환
             return result
         } else {
+            // 결과값이 Int로 변환 불가능 할 경우 nil 반환
             return nil
         }
     }
-    
 }
 
 //#Preview {
