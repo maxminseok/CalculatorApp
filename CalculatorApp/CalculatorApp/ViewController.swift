@@ -12,7 +12,6 @@ class ViewController: UIViewController {
     
     var label = UILabel()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -23,35 +22,24 @@ class ViewController: UIViewController {
         // 버튼의 타이틀 배열
         let buttonTitles = ["7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "AC", "0", "=", "/"]
         
-        // 버튼을 배열로 저장할 빈 배열 선언
-        var buttons: [UIButton] = []
+        // 버튼 생성
+        let buttons = buttonTitles.map { makeButtons($0) }
         
-        // 버튼 배열 생성
-        buttonTitles.forEach {
-            buttons.append(makeButtons($0))
+        // 수평 스택 뷰 배열
+        var horizontalStackViews: [UIStackView] = []
+        
+        for index in stride(from: 0, to: buttons.count, by: 4) {
+            let selectedButton = Array(buttons[index..<index+4])
+            let horizontalStackView = makeHorizontalStackView(selectedButton)
+            horizontalStackViews.append(horizontalStackView)
         }
         
-        // 버튼 4개씩 자르기
-        let selectedButtons1 = Array(buttons[0..<4])
-        let selectedButtons2 = Array(buttons[4..<8])
-        let selectedButtons3 = Array(buttons[8..<12])
-        let selectedButtons4 = Array(buttons[12..<16])
-        
-        // 4개씩 자른 버튼을 가로 스택뷰에 넣기
-        let horizontalStackView1 = makeHorizontalStackView(selectedButtons1)
-        let horizontalStackView2 = makeHorizontalStackView(selectedButtons2)
-        let horizontalStackView3 = makeHorizontalStackView(selectedButtons3)
-        let horizontalStackView4 = makeHorizontalStackView(selectedButtons4)
-        
-        // 가로 스택뷰 배열로 만들기
-        let stackViewList = [horizontalStackView1, horizontalStackView2, horizontalStackView3, horizontalStackView4]
-        
         // 가로 스택뷰 배열을 세로 스택뷰에 넣기
-        let verticalStackView = makeVerticalStackView(stackViewList)
+        let verticalStackView = makeVerticalStackView(horizontalStackViews)
     }
     
     // 라벨 만들기
-    private func makeLabel() {
+    func makeLabel() {
         label.text = "0"
         label.textColor = .white
         label.textAlignment = .right
@@ -74,7 +62,7 @@ class ViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30) // 모든 버튼의 폰트를 bold, 크기 30으로 설정
         button.layer.cornerRadius = 40 // 모든 버튼의 모서리를 40으로 설정
         
-        button.addTarget(self, action: #selector(clickedButton), for: .touchDown) // 버튼이 눌렸을 때 clickButton 메서드 호출
+        button.addTarget(self, action: #selector(clickButton), for: .touchDown) // 버튼이 눌렸을 때 clickButton 메서드 호출
         
         if let _ = Int(titleValues) {
             button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0) // 숫자 버튼의 배경색 설정
@@ -121,13 +109,13 @@ class ViewController: UIViewController {
     }
     
     // 버튼이 눌렸을 때 동작 하는 메서드
-    @objc func clickedButton(_ sender: UIButton) {
+    @objc func clickButton(_ sender: UIButton) {
         if let title = sender.title(for: .normal) { // 타이틀 값은 옵셔널 타입이라 옵셔널 바인딩
             changeLabelText(title)  // 버튼의 타이틀을 매개변수로 전달
         }
     }
     
-    //
+    // 라벨의 텍스트를 변경하기 위해 호출되는 메서드
     func changeLabelText(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
         // 타이틀이 숫자일 때 handleNumberInput 메서드 호출
         if let number = Int(input) {
