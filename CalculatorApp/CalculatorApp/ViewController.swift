@@ -38,7 +38,8 @@ class ViewController: UIViewController {
         let verticalStackView = makeVerticalStackView(horizontalStackViews)
     }
     
-    // 라벨 만들기
+
+    /// label을 생성하는 메서드
     func makeLabel() {
         label.text = "0"
         label.textColor = .white
@@ -54,7 +55,9 @@ class ViewController: UIViewController {
         }
     }
     
-    // 버튼 만들기
+    /// UIButton을 생성하는 메서드
+    /// - Parameter titleValues: UIButton의 title이 될 문자열
+    /// - Returns: UIButton
     func makeButtons(_ titleValues: String) -> UIButton {
         let button = UIButton()
         button.setTitle(titleValues, for: .normal) // 모든 버튼의 타이틀을 입력받은 titleValues로 설정
@@ -74,7 +77,9 @@ class ViewController: UIViewController {
         }
     }
     
-    // 가로 스택뷰 만들기
+    /// horizontal Stack View를 생성하는 메서드
+    /// - Parameter views:horizontal Stack View에 들어갈 UIButton 배열
+    /// - Returns: horizontal UIStackView
     func makeHorizontalStackView(_ views: [UIView]) -> UIStackView { // 버튼을 배열로 입력 받아서 스택뷰를 반환
         let horizontalStackView = UIStackView(arrangedSubviews: views) // 버튼 배열 스택뷰에 추가
         horizontalStackView.axis = .horizontal // 수직 스택뷰로 설정
@@ -91,7 +96,8 @@ class ViewController: UIViewController {
         return horizontalStackView
     }
     
-    // 세로 스택 뷰 만들기
+    /// vertical Stack View를 생성하는 메서드
+    /// - Parameter stackViewList: vertical Stack View에 들어갈 horizontal UIStackView 배열
     func makeVerticalStackView(_ stackViewList: [UIStackView]) {    // 스택뷰를 배열로 받아서 세로로 쌓는 스택뷰
         let verticalStackView = UIStackView(arrangedSubviews: stackViewList)
         verticalStackView.axis = .vertical  // 세로 스택뷰로 설정
@@ -108,15 +114,17 @@ class ViewController: UIViewController {
         }
     }
     
-    // 버튼이 눌렸을 때 동작 하는 메서드
+    /// 버튼이 눌렸을 때 동작 하는 메서드
+    /// - Parameter sender: 클릭 이벤트를 발생시킨 UIButton 객체
     @objc func clickButton(_ sender: UIButton) {
         if let title = sender.title(for: .normal) { // 타이틀 값은 옵셔널 타입이라 옵셔널 바인딩
             changeLabelText(title)  // 버튼의 타이틀을 매개변수로 전달
         }
     }
     
-    // 라벨의 텍스트를 변경하기 위해 호출되는 메서드
-    func changeLabelText(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
+    /// label.text를 변경하기 위해 호출되는 메서드
+    /// - Parameter input: UIButton의 title
+    func changeLabelText(_ input: String) {
         // 타이틀이 숫자일 때 handleNumberInput 메서드 호출
         if let number = Int(input) {
             handleNumberInput(input)
@@ -127,13 +135,15 @@ class ViewController: UIViewController {
         }
     }
     
-    // 라벨의 텍스트 첫 글자가 0인지 판단 후 라벨 값 변경
+    /// label.text의 첫 글자가 0인지 판단 후 label.text 값 변경
+    /// - Parameter input: UIButton의 title
     func handleNumberInput(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
         let first = label.text?.first
         first == "0" ? label.text = input : label.text?.append(input)
     }
     
-    // 누른 버튼이 기호일 때 호출되는 메서드
+    /// 누른 버튼이 기호일 때 호출되는 메서드
+    /// - Parameter input: UIButton의 title
     func handleOperationInput(_ input: String) {
         // 기호가 "=" 일 때
         if input == "=" {
@@ -143,12 +153,13 @@ class ViewController: UIViewController {
         }
         // 기호가 "AC" 또는 연산 기호일때
         else {
-            input == "AC" ? label.text = "0" : checkLabelLastText(input)
+            input == "AC" ? label.text = "0" : updateLastChar(input)
         }
     }
     
-    // 연산 기호가 연속으로 눌리는 것을 막기 위한 메서드
-    func checkLabelLastText(_ input: String) {
+    /// 연산 기호가 연속으로 눌리는 것을 막기 위한 메서드
+    /// - Parameter input: UIButton의 title
+    func updateLastChar(_ input: String) {
         let last = label.text?.last
         // label.text의 마지막 입력이 연산 기호일 때
         if last == "+" || last == "-" || last == "*" || last == "/" {
@@ -163,7 +174,9 @@ class ViewController: UIViewController {
         }
     }
     
-    // 숫자와 연산 기호로 이루어진 문자열을 연산할 때 호출되는 메서드
+    /// label.text에 저장된 문자열을 연산할 때 호출되는 메서드
+    /// - Parameter expression: 연산을 진행할 문자열 ex."1+2+3"
+    /// - Returns: Optional Int 타입의 연산 결과 값
     func calculate(expression: String) -> Int? {
         let expression = NSExpression(format: expression)   // 입력받은 문자열로 NSExpression 클래스의 인스턴스
         if let result = expression.expressionValue(with: nil, context: nil) as? Int {
