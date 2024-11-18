@@ -130,7 +130,7 @@ class ViewController: UIViewController {
     // 라벨의 텍스트 첫 글자가 0인지 판단 후 라벨 값 변경
     func handleNumberInput(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
         let first = label.text?.first
-        first == "0" ? label.text = String(input) : label.text?.append(input)
+        first == "0" ? label.text = input : label.text?.append(input)
     }
     
     // 누른 버튼이 기호일 때 호출되는 메서드
@@ -141,9 +141,25 @@ class ViewController: UIViewController {
                 label.text = String(validResult)
             }
         }
-        //기호가 "AC" 또는 사칙연산 기호일 때
+        // 기호가 "AC" 또는 연산 기호일때
         else {
-            input == "AC" ? label.text = "0" : label.text?.append(input)
+            input == "AC" ? label.text = "0" : checkLabelLastText(input)
+        }
+    }
+    
+    // 연산 기호가 연속으로 눌리는 것을 막기 위한 메서드
+    func checkLabelLastText(_ input: String) {
+        let last = label.text?.last
+        // label.text의 마지막 입력이 연산 기호일 때
+        if last == "+" || last == "-" || last == "*" || last == "/" {
+            var text = label.text   // label.text의 값 text에 저장
+            text?.removeLast()  // 마지막 기호 제거
+            text?.append(input) // 새로 입력한 연산 기호 버튼의 타이틀을 마지막에 추가
+            label.text = text   // label.text의 값을 새로운 문자열로 교체
+        }
+        // label.text의 마지막 문자가 연산기호가 아닐때
+        else {
+            label.text?.append(input)
         }
     }
     
