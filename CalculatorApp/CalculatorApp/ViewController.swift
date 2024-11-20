@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class Calculate {
+class Calculatation {
     /// label.text에 저장된 문자열을 연산할 때 호출되는 메서드
     /// - Parameter expression: 연산을 진행할 문자열 ex."1+2+3"
     /// - Returns: Optional Int 타입의 연산 결과 값
@@ -25,17 +25,16 @@ class Calculate {
 }
 
 class LabelManager {
-    var label = UILabel()
+    var label: UILabel
     
-    /// label을 생성하는 메서드
-    func makeLabel() -> UILabel {
+    init(label: UILabel) {
+        self.label = label        
         label.text = "0"
         label.textColor = .white
         label.textAlignment = .right
         label.font = UIFont.boldSystemFont(ofSize: 60)
-        return label
     }
-    
+
     /// label.text를 변경하기 위해 호출되는 메서드
     /// - Parameter input: UIButton의 title
     func changeLabelText(_ input: String) {
@@ -52,7 +51,8 @@ class LabelManager {
     /// label.text의 첫 글자가 0인지 판단 후 label.text 값 변경
     /// - Parameter input: UIButton의 title
     func handleNumberInput(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
-        let first = label.text?.first
+        let first = label.text ?? "0"
+        print("handleNumberInput 메서드 호출됨")
         first == "0" ? label.text = input : label.text?.append(input)
     }
     
@@ -61,7 +61,7 @@ class LabelManager {
     func handleOperationInput(_ input: String) {
         // 기호가 "=" 일 때
         if input == "=" {
-            if let validResult = Calculate.calculate(expression: label.text ?? "0") {
+            if let validResult = Calculatation.calculate(expression: label.text ?? "0") {
                 label.text = String(validResult)
             }
         }
@@ -87,11 +87,15 @@ class LabelManager {
             label.text?.append(input)
         }
     }
-
+    func printLabel() { print("LabelManager의 label.text = \(label.text)") }
 }
 
-class ButtonMaker {
-    let labelManager = LabelManager()
+class ButtonManager {
+    let labelManager: LabelManager
+    
+    init(labelManager: LabelManager) {
+        self.labelManager = labelManager
+    }
     
     /// UIButton을 생성하는 메서드
     /// - Parameter titleValues: UIButton의 title이 될 문자열
@@ -119,7 +123,9 @@ class ButtonMaker {
     /// - Parameter sender: 클릭 이벤트를 발생시킨 UIButton 객체
     @objc func clickButton(_ sender: UIButton) {
         if let title = sender.title(for: .normal) { // 타이틀 값은 옵셔널 타입이라 옵셔널 바인딩
+            print("\(title) 버튼이 눌림")
             labelManager.changeLabelText(title)  // 버튼의 타이틀을 매개변수로 전달
+            labelManager.printLabel()
         }
     }
 }
@@ -155,22 +161,22 @@ class StackViewMaker {
     }
 }
 
-
-
 class ViewController: UIViewController {
     
-    var label = LabelManager()
-    var buttonMaker = ButtonMaker()
+    var labelManager: LabelManager!
+    var buttonManager: ButtonManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         
         // 라벨 생성
-        var currentLabel = label.makeLabel()
-        view.addSubview(currentLabel) // 라벨을 뷰에 추가
+        var label = UILabel()
+        labelManager = LabelManager(label: label)
+        buttonManager = ButtonManager(labelManager: labelManager)
+        view.addSubview(label) // 라벨을 뷰에 추가
         
-        currentLabel.snp.makeConstraints {
+        label.snp.makeConstraints {
             $0.height.equalTo(100)
             $0.top.equalToSuperview().offset(200)
             $0.trailing.equalToSuperview().offset(-30)
@@ -179,7 +185,7 @@ class ViewController: UIViewController {
         // 버튼의 타이틀 배열
         let buttonTitles = ["7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "AC", "0", "=", "/"]
         // 버튼 생성
-        let buttons = buttonTitles.map { buttonMaker.makeButtons($0) }
+        let buttons = buttonTitles.map { buttonManager.makeButtons($0) }
         
         // 수평 스택 뷰 배열
         var horizontalStackViews: [UIStackView] = []
@@ -197,10 +203,8 @@ class ViewController: UIViewController {
         
         verticalStackView.snp.makeConstraints {
             $0.width.equalTo(350)
-            $0.top.equalTo(currentLabel.snp.bottom).offset(60)
+            $0.top.equalTo(label.snp.bottom).offset(60)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
     }
-    
-
 }
