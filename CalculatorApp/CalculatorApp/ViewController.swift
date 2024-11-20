@@ -51,8 +51,7 @@ class LabelManager {
     /// label.text의 첫 글자가 0인지 판단 후 label.text 값 변경
     /// - Parameter input: UIButton의 title
     func handleNumberInput(_ input: String) { // 매개변수로 버튼의 타이틀이 넘어옴
-        let first = label.text ?? "0"
-        print("handleNumberInput 메서드 호출됨")
+        let first = label.text?.first
         first == "0" ? label.text = input : label.text?.append(input)
     }
     
@@ -87,7 +86,6 @@ class LabelManager {
             label.text?.append(input)
         }
     }
-    func printLabel() { print("LabelManager의 label.text = \(label.text)") }
 }
 
 class ButtonManager {
@@ -123,9 +121,7 @@ class ButtonManager {
     /// - Parameter sender: 클릭 이벤트를 발생시킨 UIButton 객체
     @objc func clickButton(_ sender: UIButton) {
         if let title = sender.title(for: .normal) { // 타이틀 값은 옵셔널 타입이라 옵셔널 바인딩
-            print("\(title) 버튼이 눌림")
             labelManager.changeLabelText(title)  // 버튼의 타이틀을 매개변수로 전달
-            labelManager.printLabel()
         }
     }
 }
@@ -171,7 +167,7 @@ class ViewController: UIViewController {
         view.backgroundColor = .black
         
         // 라벨 생성
-        var label = UILabel()
+        let label = UILabel()
         labelManager = LabelManager(label: label)
         buttonManager = ButtonManager(labelManager: labelManager)
         view.addSubview(label) // 라벨을 뷰에 추가
