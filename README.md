@@ -53,5 +53,5 @@ UI를 구성하고, button 클릭 이벤트 처리를 위한 메서드가 구현
 
 ---
 
-## 트러블 슈팅
-[🛠️트러블슈팅](https://velog.io/@maxminseok/TIL-%EA%B3%BC%EC%A0%9C-%EA%B3%84%EC%82%B0%EA%B8%B0-%EC%95%B1-%EB%A9%94%EC%84%9C%EB%93%9C-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0)
+## 🛠️트러블 슈팅
+[트러블슈팅](https://velog.io/@maxminseok/TIL-%EA%B3%BC%EC%A0%9C-%EA%B3%84%EC%82%B0%EA%B8%B0-%EC%95%B1-%EB%A9%94%EC%84%9C%EB%93%9C-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0)
