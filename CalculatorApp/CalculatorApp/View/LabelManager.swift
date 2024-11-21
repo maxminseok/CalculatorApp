@@ -52,7 +52,7 @@ class LabelManager {
         }
     }
     
-    /// 연산 기호가 연속으로 눌리는 것을 막기 위한 메서드
+    /// 연산 기호 연속 입력 방지 메서드
     /// - Parameter input: UIButton의 title
     func updateLastChar(_ input: String) {
         let last = inputText.last
@@ -82,7 +82,7 @@ class LabelManager {
     
     /// 연산 기호가 눌렸을 때 마지막 글자를 체크하는 메서드
     /// - Parameter character: label의 마지막 글자
-    /// - Returns: 마지막 글자가 연산기호면 true, 아니면 false 반환
+    /// - Returns: 마지막 글자가 연산기호면 true, 아니면 false
     func isOperator(_ character: Character?) -> Bool {
         return character == "+" || character == "-" || character == "*" || character == "/"
     }

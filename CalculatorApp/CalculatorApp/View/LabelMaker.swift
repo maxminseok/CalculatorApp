@@ -8,6 +8,8 @@
 import UIKit
 
 class LabelMaker {
+    /// UILabel 생성 메서드
+    /// - Returns: UILabel
     static func makeLabel() -> UILabel {
         let label = UILabel()
         label.text = "0"
