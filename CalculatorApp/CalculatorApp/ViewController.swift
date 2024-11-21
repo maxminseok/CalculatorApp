@@ -116,7 +116,7 @@ class LabelMaker {
     }
 }
 
-class ButtonManager {
+class ButtonMaker {
     /// UIButton을 생성하는 메서드
     /// - Parameter titleValues: UIButton의 title이 될 문자열
     /// - Returns: UIButton
@@ -172,35 +172,27 @@ class StackViewMaker {
     }
 }
 
-class ViewController: UIViewController {
-    
-    var labelManager: LabelManager!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setUI()
-    }
-    
-    private func setUI() {
-        view.backgroundColor = .black
+class UIConfigurator {
+    static func settingUI(_ viewController: ViewController ) {
+        viewController.view.backgroundColor = .black
         
         // 라벨 생성
         let label = LabelMaker.makeLabel()
-        view.addSubview(label)
+        viewController.view.addSubview(label)
         label.snp.makeConstraints {
             $0.height.equalTo(100)
             $0.top.equalToSuperview().offset(200)
             $0.trailing.equalToSuperview().offset(-30)
         }
-        labelManager = LabelManager(label: label)
+        // 라벨 업데이트
+        viewController.labelManager = LabelManager(label: label)
         
         // 버튼의 타이틀 배열
         let buttonTitles = ["7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "AC", "0", "=", "/"]
         // 버튼 생성
         let buttons = buttonTitles.map { title in
-            let button = ButtonManager.makeButtons(title)
-            button.addTarget(self, action: #selector(clickButton), for: .touchDown)
+            let button = ButtonMaker.makeButtons(title)
+            button.addTarget(viewController, action: #selector(viewController.clickButton), for: .touchDown)
             return button
         }
         
@@ -214,12 +206,23 @@ class ViewController: UIViewController {
         
         // 수평 스택뷰 배열을 수직 스택뷰에 넣기
         let verticalStackView = StackViewMaker.makeVerticalStackView(horizontalStackViews)
-        view.addSubview(verticalStackView)
+        viewController.view.addSubview(verticalStackView)
         verticalStackView.snp.makeConstraints {
             $0.width.equalTo(350)
             $0.top.equalTo(label.snp.bottom).offset(60)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
+    }
+}
+
+class ViewController: UIViewController {
+    
+    var labelManager: LabelManager!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        UIConfigurator.settingUI(self)
     }
     
     /// 버튼이 눌렸을 때 호출되는 메서드
