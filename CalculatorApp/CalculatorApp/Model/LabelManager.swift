@@ -66,6 +66,7 @@ class LabelManager {
     
     /// "=" 버튼이 눌렸을 때 동작하는 메서드
     func performCalculation() {
+        guard !isOperator(inputText.last)  else { return }
         if let result = Calculatation.calculate(expression: inputText) {
             inputText = String(result)
         } else {
